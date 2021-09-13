@@ -72,10 +72,11 @@ namespace TwitchBot
             // Check if a user suggested a chess move in chat
             if (ChessMove.IsMatch(e.ChatMessage.Message))
             {
+                // Grab current game
                 var game = Lichess.GetCurrGameAsync("ninjamonkers").GetAwaiter().GetResult();
 
                 // If I am in a rated game, delete the message to avoid cheating
-                if(game.GetTagOrNull("Termination")?.Value == "Unterminated" && game.GetTagOrNull("Event")?.Value.Split(' ')[0] == "Rated")
+                if(game != null && game.GetTagOrNull("Termination")?.Value == "Unterminated" && game.GetTagOrNull("Event")?.Value.Split(' ')[0] == "Rated")
                 {
                     client.SendMessage(channel, $".delete {e.ChatMessage.Id}");
                     client.SendMessage(channel, "Please refrain from giving move suggestions while I am playing rated!");
